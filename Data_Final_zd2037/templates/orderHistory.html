@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Order History{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+
+{% if orders %}
+   <div class="orderHistory">
+     <h2>Here are all history orders:</h2>
+     <table>
+       <thead>
+         <tr>
+		   <th>OrderID</th>
+           <th>orderDate</th>
+		   <th>supervisor</th>
+		   <th>client</th>
+		   <th>notes</th>
+         </tr>
+       </thead>
+       <tbody>
+         {% for order in orders %}
+           <tr>
+             <td>{{ order[0] }}</td>
+             <td>{{ order[1] }}</td>
+             <td>{{ order[3] }}</td>
+             <td>{{ order[4] }}</td>
+			 <td>{{ order[2] }}</td>
+           </tr>
+         {% endfor %}
+       </tbody>
+     </table>
+   </div>
+ {% else %}
+   <p>No orders found for this account.</p>
+ {% endif %}
+ <div class="return">
+    <a href="{{ url_for('auth.main') }}">Return to homepage</a>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Find Item{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="itemID">Item ID</label>
+    <input name="itemID" id="itemID" required>
+    <input type="submit" value="Find">
+  </form>
+  {% if pieces %}
+  <div class="item-details">
+    <h2>Item Pieces</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ItemDescription</th>
+          <th>PieceID</th>
+          <th>RoomID</th>
+          <th>ShelfID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for piece in pieces %}
+          <tr>
+            <td>{{ piece[1] }}</td>
+            <td>{{ piece[9] }}</td>
+            <td>{{ piece[14] }}</td>
+            <td>{{ piece[15] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p>No pieces found for this item.</p>
+{% endif %}
+<div class="return">
+  <a href="{{ url_for('auth.main') }}">Return to homepage</a>
+</div>
+{% endblock %}

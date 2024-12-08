@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Add to Current Order{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="orderID">Order ID</label>
+    <input type="text" name="orderID" id="orderID" value="{{ request.form.orderID }}" required>
+
+    <label for="mainCategory">Main Category</label>
+    <select name="mainCategory" id="mainCategory" required>
+      <option value="" disabled selected>Select Main Category</option>
+      {% for mainCategory in categories.keys() %}
+        <option value="{{ mainCategory }}">{{ mainCategory }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="subCategory">Sub Category</label>
+    <select name="subCategory" id="subCategory" required>
+      <option value="" disabled selected>Select Sub Category</option>
+    </select>
+
+    <script>
+      const categoriesData = JSON.parse('{{ categories|tojson | safe }}');
+      const mainCategorySelect = document.getElementById('mainCategory');
+      const subCategorySelect = document.getElementById('subCategory');
+
+      mainCategorySelect.addEventListener('change', () => {
+        const selectedMain = mainCategorySelect.value;
+        subCategorySelect.innerHTML = '<option value="" disabled selected>Select Sub Category</option>';
+        if (categoriesData[selectedMain]) {
+          categoriesData[selectedMain].forEach(subCategory => {
+            const option = document.createElement('option');
+            option.value = subCategory;
+            option.textContent = subCategory;
+            subCategorySelect.appendChild(option);
+          });
+        }
+      });
+    </script>
+
+    <button type="submit" name="filterItems">Filter Items</button>
+  </form>
+  <h3>Available Items</h3>
+  <table>
+    <tr>
+      <th>Description</th>
+      <th>Color</th>
+      <th>Material</th>
+      <th>Action</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td>{{ item[1] }}</td>
+      <td>{{ item[2] }}</td>
+      <td>{{ item[3] }}</td>
+      <td>
+        <form method="POST" style="display:inline;">
+          <input type="hidden" name="orderID" value="{{ request.form.orderID }}">
+          <input type="hidden" name="itemID" value="{{ item[0] }}">
+          <button type="submit" name="addItem">Add to Order</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <h3>Current Order</h3>
+  <table>
+    <tr>
+      <th>Description</th>
+      <th>Color</th>
+      <th>Material</th>
+    </tr>
+    {% for item in current_order %}
+    <tr>
+      <td>{{ item[1] }}</td>
+      <td>{{ item[2] }}</td>
+      <td>{{ item[3] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div class="return">
+    <a href="{{ url_for('auth.main') }}">Return to homepage</a>
+  </div>
+{% endblock %}

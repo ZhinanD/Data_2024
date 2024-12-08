@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Phone Numbers{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="phoneNumber">Phone Number</label>
+    <input name="phoneNumber" id="phoneNumber" required>
+    <input type="submit" value="Add">
+  </form>
+
+  {% if phones %}
+   <div class="myPhones">
+    <h2>Here are all user's phone numbers:</h2>
+    <table>
+        <tbody>
+        {% for phone in phones %}
+          <tr>
+            <td>{{ phone }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+   </div>
+ {% else %}
+   <p>No existing phone number.</p>
+ {% endif %}
+ <div class="return">
+    <a href="{{ url_for('auth.main') }}">Return to homepage</a>
+</div>
+{% endblock %}

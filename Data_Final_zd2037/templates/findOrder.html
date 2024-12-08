@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Find Order{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="orderID">OrderID</label>
+    <input name="orderID" id="orderID" required>
+    <input type="submit" value="Find">
+  </form>
+   {% if orders %}
+   <div class="item-details">
+     <h2>Orders</h2>
+     <table>
+       <thead>
+         <tr>
+           <th>ItemDescription</th>
+           <th>ItemID</th>
+           <th>PieceID</th>
+           <th>RoomID</th>
+           <th>ShelfID</th>
+         </tr>
+       </thead>
+       <tbody>
+         {% for order in orders %}
+           <tr>
+             <td>{{ order[1] }}</td>
+             <td>{{ order[12] }}</td>
+             <td>{{ order[13] }}</td>
+             <td>{{ order[18] }}</td>
+             <td>{{ order[19] }}</td>
+           </tr>
+         {% endfor %}
+       </tbody>
+     </table>
+   </div>
+ {% else %}
+   <p>No orders found for this order number.</p>
+ {% endif %}
+ <div class="return">
+  <a href="{{ url_for('auth.main') }}">Return to homepage</a>
+</div>
+{% endblock %}

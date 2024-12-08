@@ -1,0 +1,120 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Accept Donation{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="donorID">Donor ID</label>
+    <input type="text" name="donorID" id="donorID" required>
+
+    <label for="itemDescription">Item Description</label>
+    <input type="text" name="itemDescription" id="itemDescription" required>
+
+    <label for="itemColor">Item Color</label>
+    <input type="text" name="itemColor" id="itemColor" required>
+
+    <select name="isNew" id="isNew" required>
+        <option value="" disabled selected>New?</option>
+        <option value=1>Yes</option>
+        <option value=0>No</option>
+    </select>
+
+    <select name="hasPieces" id="hasPieces" required onchange="toggleLocationInput()">
+        <option value="" disabled selected>Has Pieces?</option>
+        <option value=1>Yes</option>
+        <option value=0>No</option>
+    </select>
+
+    <label for="itemMaterial">Item Material</label>
+    <input type="text" name="itemMaterial" id="itemMaterial" required>
+
+
+    <label for="mainCategory">Main Category</label>
+    <select name="mainCategory" id="mainCategory" required>
+      <option value="" disabled selected>Select Main Category</option>
+      {% for mainCategory in categories.keys() %}
+        <option value="{{ mainCategory }}">{{ mainCategory }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="subCategory">Sub Category</label>
+    <select name="subCategory" id="subCategory" required>
+      <option value="" disabled selected>Select Sub Category</option>
+    </select>
+
+    <script>
+      const categoriesData = JSON.parse('{{ categories|tojson | safe }}');
+      const mainCategorySelect = document.getElementById('mainCategory');
+      const subCategorySelect = document.getElementById('subCategory');
+    
+      mainCategorySelect.addEventListener('change', () => {
+        const selectedMain = mainCategorySelect.value;
+        subCategorySelect.innerHTML = '<option value="" disabled selected>Select Sub Category</option>';
+    
+        if (donationCategories[selectedMain]) {
+          donationCategories[selectedMain].forEach(subCategory => {
+            const option = document.createElement('option');
+            option.value = subCategory;
+            option.textContent = subCategory;
+            subCategorySelect.appendChild(option);
+          });
+        }
+      });
+    </script>
+    
+    
+
+    <div id="piecesInput" style="display: none;">
+        <label for="pieces">Add Pieces</label>
+        <div id="pieces">
+            <type="text" name="pieces" placeholder="RoomID,ShelfID" required>
+        </div>
+        <button type="button" onclick="addPiece()">Add Another Piece</button>
+    </div>
+
+    <div id="singleLocationInput" style="display: none;">
+      <label for="location">Location</label>
+      <input type="text" name="location" id="location" placeholder="RoomID,ShelfID">
+      <input type="hidden" name="pieceNum" id="pieceNum" value="0"> <!-- Default pieceID -->
+    </div>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  
+
+  <script>
+    function toggleLocationInput() {
+      const hasPieces = document.getElementById('hasPieces').value;
+      const piecesInput = document.getElementById('piecesInput');
+      const singleLocationInput = document.getElementById('singleLocationInput');
+
+      if (hasPieces === "1") {
+          piecesInput.style.display = "block";
+          singleLocationInput.style.display = "none";
+      } else {
+          piecesInput.style.display = "none";
+          singleLocationInput.style.display = "block";
+      }
+  }
+
+  function addPiece() {
+      const pieceInput = document.createElement('input');
+      pieceInput.type = 'text';
+      pieceInput.name = 'pieces';
+      pieceInput.placeholder = 'RoomID,ShelfID';
+      document.getElementById('pieces').appendChild(pieceInput);
+  }
+    
+
+    
+  </script>
+
+
+<div class="return">
+    <a href="{{ url_for('auth.main') }}">Return to homepage</a>
+</div>
+{% endblock %}
